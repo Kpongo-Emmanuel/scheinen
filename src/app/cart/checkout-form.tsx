@@ -12,6 +12,7 @@ import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { createOrder, verifyOrderPayment } from "@/app/actions/order";
 
 const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
@@ -42,7 +43,6 @@ export default function CheckoutForm() {
   }, [status, router]);
 
   const totalAmount = cartTotal();
-  // Paystack expects amount in lowest unit (kobo for NGN). So multiply by 100.
   const paystackAmount = totalAmount * 100; 
 
   const config = {
@@ -53,10 +53,35 @@ export default function CheckoutForm() {
     currency: 'NGN',
   };
 
-  const onSuccess = (reference: any) => {
-    toast.success("Payment successful! Reference: " + reference.reference);
-    useCart.getState().clearCart();
-    router.push("/");
+  const onSuccess = async (reference: any) => {
+    try {
+      // 1. Create order in DB with items
+      const orderItems = items.map(i => ({
+        id: i.productId, // Actually the store saves `id` as the cart item id, which is `${productId}-${size}`
+        size: i.selectedSize || "N/A",
+        quantity: i.quantity,
+        price: i.price
+      }));
+      
+      const realProductItems = items.map(i => ({
+        id: i.id.split('-')[0], // Extract real productId if id is composite
+        size: i.selectedSize || "N/A",
+        quantity: i.quantity,
+        price: i.price
+      }));
+
+      const orderId = await createOrder(totalAmount, realProductItems);
+      
+      // 2. Verify and Mark Paid
+      await verifyOrderPayment(orderId, reference.reference);
+      
+      toast.success("Payment successful! Reference: " + reference.reference);
+      useCart.getState().clearCart();
+      router.push("/");
+    } catch (e) {
+      console.error(e);
+      toast.error("Payment processed, but order recording failed. Contact support.");
+    }
   };
 
   const onClose = () => {
