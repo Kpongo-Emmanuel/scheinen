@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { ProductCard } from "@/components/ui/product-card";
 import Link from "next/link";
 import { getStoreLockStatus } from "@/lib/store-lock";
 import { LockScreen } from "@/components/layout/lock-screen";
