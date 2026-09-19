@@ -21,8 +21,8 @@ export default async function AdminProductsPage() {
         </Button>
       </div>
 
-      <div className="border border-border rounded-lg overflow-hidden bg-card">
-        <table className="w-full text-sm text-left">
+      <div className="border border-border rounded-lg overflow-hidden bg-card overflow-x-auto">
+        <table className="w-full text-sm text-left min-w-[800px]">
           <thead className="bg-muted text-muted-foreground uppercase">
             <tr>
               <th className="px-6 py-4 font-medium">Product</th>

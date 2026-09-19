@@ -27,7 +27,7 @@ export default async function AdminCollectionsPage() {
       </div>
 
       <div className="border border-border rounded-lg overflow-hidden bg-card overflow-x-auto">
-        <table className="w-full text-sm text-left min-w-[600px]">
+        <table className="w-full text-sm text-left min-w-[800px]">
           <thead className="text-xs uppercase bg-muted text-muted-foreground border-b border-border">
             <tr>
               <th className="px-6 py-4 font-semibold">Image</th>
