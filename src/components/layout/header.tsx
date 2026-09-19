@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { ShoppingBasket, Menu, X, Search, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/useCart";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 const navigation = [
@@ -16,32 +16,37 @@ const navigation = [
 export function Header() {
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const items = useCart((state) => state.items);
   const pathname = usePathname();
+  
+  // Direct DOM refs — no React state for menu visibility
+  const panelRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Close menu whenever the route changes
+  // Close menu on route change
   useEffect(() => {
-    setMenuOpen(false);
+    closeMenu();
   }, [pathname]);
 
-  // Lock body scroll when menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
+  function openMenu() {
+    document.body.style.overflow = "hidden";
+    panelRef.current?.classList.remove("-translate-x-full");
+    panelRef.current?.classList.add("translate-x-0");
+    backdropRef.current?.classList.remove("opacity-0", "pointer-events-none");
+    backdropRef.current?.classList.add("opacity-100", "pointer-events-auto");
+  }
 
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  function closeMenu() {
+    document.body.style.overflow = "";
+    panelRef.current?.classList.remove("translate-x-0");
+    panelRef.current?.classList.add("-translate-x-full");
+    backdropRef.current?.classList.remove("opacity-100", "pointer-events-auto");
+    backdropRef.current?.classList.add("opacity-0", "pointer-events-none");
+  }
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
 
@@ -68,7 +73,7 @@ export function Header() {
           {/* Mobile menu trigger */}
           <div className="flex-1 md:hidden">
             <button 
-              onClick={() => setMenuOpen(true)} 
+              onClick={openMenu} 
               className="p-2 -ml-2 hover:bg-accent rounded-md transition-colors"
               aria-label="Open menu"
             >
@@ -131,21 +136,19 @@ export function Header() {
         </div>
       </header>
 
-      {/* ===== MOBILE MENU (no Radix, no Portal, just plain divs) ===== */}
+      {/* ===== MOBILE MENU — Pure DOM, no React state ===== */}
 
-      {/* Backdrop overlay */}
+      {/* Backdrop */}
       <div 
-        className={`fixed inset-0 z-[100] bg-black/80 transition-opacity duration-300 md:hidden ${
-          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        ref={backdropRef}
         onClick={closeMenu}
+        className="fixed inset-0 z-[100] bg-black/80 transition-opacity duration-300 md:hidden opacity-0 pointer-events-none"
       />
 
-      {/* Slide-in panel */}
+      {/* Panel */}
       <div 
-        className={`fixed top-0 left-0 z-[101] h-full w-[300px] bg-background border-r border-border/50 transform transition-transform duration-300 ease-in-out md:hidden ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        ref={panelRef}
+        className="fixed top-0 left-0 z-[101] h-full w-[300px] bg-background border-r border-border/50 transition-transform duration-300 ease-in-out md:hidden -translate-x-full"
       >
         {/* Close button */}
         <button 
@@ -189,7 +192,7 @@ export function Header() {
 
         <div className="h-px bg-border" />
 
-        {/* Auth section */}
+        {/* Auth */}
         <div className="p-6">
           {session ? (
             <div className="flex flex-col gap-4">
