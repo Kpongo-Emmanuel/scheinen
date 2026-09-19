@@ -70,10 +70,10 @@ export function Header() {
             <SheetContent side="left" className="w-[300px] p-0 bg-background border-r border-border/50">
               <SheetHeader className="p-6 border-b border-border/50 text-center">
                 <SheetTitle asChild>
-                  <button onClick={() => { router.push("/"); setIsMobileMenuOpen(false); }} className="inline-flex flex-col items-center gap-2 mx-auto">
+                  <Link href="/" onClick={() => setTimeout(() => setIsMobileMenuOpen(false), 50)} className="inline-flex flex-col items-center gap-2 mx-auto">
                     <img src="/ss_logo.png" alt="SS" className="h-10 object-contain mix-blend-multiply dark:mix-blend-normal" />
                     <span className="font-semibold text-lg tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
-                  </button>
+                  </Link>
                 </SheetTitle>
               </SheetHeader>
               
@@ -88,13 +88,14 @@ export function Header() {
                   />
                 </form>
                 {navigation.map((item) => (
-                  <button 
+                  <Link 
                     key={item.name}
-                    onClick={() => { router.push(item.href); setIsMobileMenuOpen(false); }}
+                    href={item.href}
+                    onClick={() => setTimeout(() => setIsMobileMenuOpen(false), 50)}
                     className="px-4 py-3 text-left text-sm font-semibold tracking-widest uppercase hover:bg-accent rounded-md transition-colors w-full"
                   >
                     {item.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
               
@@ -107,17 +108,21 @@ export function Header() {
                       Account ({session.user?.name || session.user?.email})
                     </p>
                     {session.user?.role === "ADMIN" && (
-                      <Button onClick={() => { router.push("/admin"); setIsMobileMenuOpen(false); }} variant="outline" className="w-full justify-start h-12 rounded-none">
-                        Admin Dashboard
+                      <Button variant="outline" className="w-full justify-start h-12 rounded-none" asChild>
+                        <Link href="/admin" onClick={() => setTimeout(() => setIsMobileMenuOpen(false), 50)}>
+                          Admin Dashboard
+                        </Link>
                       </Button>
                     )}
-                    <Button onClick={() => { signOut(); setIsMobileMenuOpen(false); }} variant="secondary" className="w-full justify-between h-12 rounded-none">
+                    <Button onClick={() => { setTimeout(() => setIsMobileMenuOpen(false), 50); signOut(); }} variant="secondary" className="w-full justify-between h-12 rounded-none">
                       Log Out <ArrowUpRight className="w-4 h-4" />
                     </Button>
                   </div>
                 ) : (
-                  <Button onClick={() => { router.push("/login"); setIsMobileMenuOpen(false); }} className="w-full justify-between h-12 rounded-none uppercase tracking-widest text-xs">
-                    Log In <ArrowUpRight className="w-4 h-4" />
+                  <Button asChild className="w-full justify-between h-12 rounded-none uppercase tracking-widest text-xs">
+                    <Link href="/login" onClick={() => setTimeout(() => setIsMobileMenuOpen(false), 50)}>
+                      Log In <ArrowUpRight className="w-4 h-4" />
+                    </Link>
                   </Button>
                 )}
               </div>
