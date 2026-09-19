@@ -68,7 +68,7 @@ export function Header() {
             <SheetContent side="left" className="w-[300px] p-0 bg-background border-r border-border/50">
               <SheetHeader className="p-6 border-b border-border/50 text-center">
                 <SheetTitle asChild>
-                  <Link href="/" className="inline-flex flex-col items-center gap-2 mx-auto">
+                  <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex flex-col items-center gap-2 mx-auto">
                     <img src="/ss_logo.png" alt="SS" className="h-10 object-contain mix-blend-multiply dark:mix-blend-normal" />
                     <span className="font-semibold text-lg tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
                   </Link>
@@ -89,6 +89,7 @@ export function Header() {
                   <Link 
                     key={item.name}
                     href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="px-4 py-3 text-sm font-semibold tracking-widest uppercase hover:bg-accent rounded-md transition-colors"
                   >
                     {item.name}
@@ -106,7 +107,7 @@ export function Header() {
                     </p>
                     {session.user?.role === "ADMIN" && (
                       <Button variant="outline" className="w-full justify-start h-12 rounded-none" asChild>
-                        <Link href="/admin">Admin Dashboard</Link>
+                        <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>Admin Dashboard</Link>
                       </Button>
                     )}
                     <Button onClick={() => { signOut(); setIsMobileMenuOpen(false); }} variant="secondary" className="w-full justify-between h-12 rounded-none">
@@ -115,7 +116,7 @@ export function Header() {
                   </div>
                 ) : (
                   <Button asChild className="w-full justify-between h-12 rounded-none uppercase tracking-widest text-xs">
-                    <Link href="/login">
+                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                       Log In <ArrowUpRight className="w-4 h-4" />
                     </Link>
                   </Button>
