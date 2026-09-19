@@ -24,12 +24,17 @@ const navigation = [
 export function Header() {
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const items = useCart((state) => state.items);
   const pathname = usePathname();
   
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
 
@@ -54,7 +59,7 @@ export function Header() {
 
         {/* Mobile menu trigger */}
         <div className="flex-1 md:hidden">
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
                 <Menu className="w-5 h-5" />
@@ -104,7 +109,7 @@ export function Header() {
                         <Link href="/admin">Admin Dashboard</Link>
                       </Button>
                     )}
-                    <Button onClick={() => signOut()} variant="secondary" className="w-full justify-between h-12 rounded-none">
+                    <Button onClick={() => { signOut(); setIsMobileMenuOpen(false); }} variant="secondary" className="w-full justify-between h-12 rounded-none">
                       Log Out <ArrowUpRight className="w-4 h-4" />
                     </Button>
                   </div>
