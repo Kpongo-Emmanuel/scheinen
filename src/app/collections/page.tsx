@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { getStoreLockStatus } from "@/lib/store-lock";
+import { LockScreen } from "@/components/layout/lock-screen";
 
 export default async function CollectionsPage() {
+  const { locked, message } = await getStoreLockStatus();
+  if (locked) return <LockScreen message={message} />;
+
   const collections = await prisma.collection.findMany({
     include: {
       _count: {

@@ -79,3 +79,12 @@ export async function deleteCollection(id: string) {
   revalidatePath("/collections");
   revalidatePath("/");
 }
+
+export async function updateCollectionStatus(id: string, status: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
+  await prisma.collection.update({ where: { id }, data: { status } });
+  revalidatePath("/admin/collections");
+  revalidatePath("/collections");
+  revalidatePath("/");
+}

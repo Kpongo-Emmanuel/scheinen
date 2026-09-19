@@ -1,19 +1,37 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { ProductCard } from "@/components/ui/product-card";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { getStoreLockStatus } from "@/lib/store-lock";
+import { LockScreen } from "@/components/layout/lock-screen";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export default async function CollectionPage({ params }: { params: Promise<{ collectionId: string }> }) {
+  const { locked, message } = await getStoreLockStatus();
+  if (locked) return <LockScreen message={message} />;
+
   const { collectionId } = await params;
+  
   const collection = await prisma.collection.findUnique({
     where: { id: collectionId },
     include: {
-      products: true
+      products: {
+        include: { collection: true, sizes: true }
+      }
     }
   });
 
-  if (!collection) {
-    return notFound();
+  if (!collection) notFound();
+
+  // Check collection status
+  if (collection.status === "DRAFT") {
+    const session = await getServerSession(authOptions);
+    if (session?.user?.role !== "ADMIN") notFound();
+  }
+  if (collection.status === "LOCKED") {
+    const session = await getServerSession(authOptions);
+    if (session?.user?.role !== "ADMIN") return <LockScreen message={`COLLECTION ${collection.name} DROPPING SOON`} />;
   }
 
   return (

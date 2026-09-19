@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Trash2, Plus } from "lucide-react";
 import { deleteCollection } from "@/app/actions/collection";
+import { CollectionStatusSelect } from "./status-select";
 
 export default async function AdminCollectionsPage() {
   const collections = await prisma.collection.findMany({
@@ -25,12 +26,13 @@ export default async function AdminCollectionsPage() {
         </Button>
       </div>
 
-      <div className="border border-border rounded-lg overflow-hidden bg-card">
-        <table className="w-full text-sm text-left">
+      <div className="border border-border rounded-lg overflow-hidden bg-card overflow-x-auto">
+        <table className="w-full text-sm text-left min-w-[600px]">
           <thead className="text-xs uppercase bg-muted text-muted-foreground border-b border-border">
             <tr>
               <th className="px-6 py-4 font-semibold">Image</th>
               <th className="px-6 py-4 font-semibold">Name</th>
+              <th className="px-6 py-4 font-semibold">Status</th>
               <th className="px-6 py-4 font-semibold">Products</th>
               <th className="px-6 py-4 font-semibold text-right">Actions</th>
             </tr>
@@ -48,6 +50,9 @@ export default async function AdminCollectionsPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4 font-medium text-foreground">{col.name}</td>
+                <td className="px-6 py-4">
+                  <CollectionStatusSelect id={col.id} currentStatus={col.status} />
+                </td>
                 <td className="px-6 py-4">{col._count.products} products</td>
                 <td className="px-6 py-4 text-right">
                   <form action={async () => {
