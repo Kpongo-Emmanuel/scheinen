@@ -16,23 +16,23 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-muted/20">
+    <div className="min-h-screen flex flex-col md:flex-row bg-muted/20">
       {/* Admin Sidebar */}
-      <aside className="w-64 bg-card border-r border-border p-6 flex flex-col gap-6">
-        <div className="font-bold text-xl text-foreground">
+      <aside className="w-full md:w-64 bg-card border-b md:border-b-0 md:border-r border-border p-4 md:p-6 flex flex-col md:h-screen sticky top-0 gap-4 md:gap-6 z-10">
+        <div className="font-bold text-xl text-foreground hidden md:block">
           Scheinen Admin
         </div>
-        <nav className="flex flex-col gap-2">
-          <Button variant="ghost" className="justify-start w-full" asChild>
+        <nav className="flex flex-row md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0">
+          <Button variant="ghost" className="justify-start w-auto md:w-full whitespace-nowrap" asChild>
             <Link href="/admin">Dashboard</Link>
           </Button>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" asChild>
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground w-auto md:w-full whitespace-nowrap" asChild>
             <Link href="/admin/collections">Collections</Link>
           </Button>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground" asChild>
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground w-auto md:w-full whitespace-nowrap" asChild>
             <Link href="/admin/products">Products</Link>
           </Button>
-          <Button variant="ghost" className="justify-start w-full" asChild>
+          <Button variant="ghost" className="justify-start w-auto md:w-full whitespace-nowrap" asChild>
             <Link href="/">Back to Store</Link>
           </Button>
         </nav>

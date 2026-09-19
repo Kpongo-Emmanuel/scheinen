@@ -58,11 +58,19 @@ model VerificationToken {
 
 // E-Commerce Models
 
+model StoreSettings {
+  id            String   @id @default("singleton")
+  isStoreLocked Boolean  @default(false)
+  lockMessage   String?
+  updatedAt     DateTime @updatedAt
+}
+
 model Collection {
   id          String    @id @default(cuid())
   name        String    @unique
   description String?
   imageUrl    String?
+  status      String    @default("PUBLISHED") // PUBLISHED, DRAFT, LOCKED
   products    Product[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
