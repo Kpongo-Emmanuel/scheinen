@@ -17,8 +17,8 @@ export default function ShippingPolicyPage() {
 
         <h2 className="text-xl font-semibold mt-10 mb-4">3. Delivery Time</h2>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-          <li><strong>Lagos:</strong> 1–3 business days</li>
-          <li><strong>Other major cities (Abuja, Port Harcourt, etc.):</strong> 3–5 business days</li>
+          <li><strong>Abuja:</strong> 1–3 business days</li>
+          <li><strong>Other major cities (Lagos, Port Harcourt, etc.):</strong> 3–5 business days</li>
           <li><strong>Other locations:</strong> 5–7 business days</li>
         </ul>
         <p className="text-muted-foreground text-sm mt-2">
