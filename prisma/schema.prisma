@@ -116,8 +116,15 @@ model Order {
   id        String     @id @default(cuid())
   userId    String
   total     Float
-  status    String   @default("PENDING") // PENDING, PAID, FAILED
+  status    String   @default("PENDING") // PENDING, PAID, SHIPPED, DELIVERED, FAILED
   reference String?  @unique
+  
+  // Shipping info
+  shippingName    String?
+  shippingPhone   String?
+  shippingAddress String?
+  shippingCity    String?
+  shippingState   String?
   
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     OrderItem[]

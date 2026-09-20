@@ -33,6 +33,9 @@ export default async function AdminLayout({
             <Link href="/admin/products">Products</Link>
           </Button>
           <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground w-auto md:w-full whitespace-nowrap" asChild>
+            <Link href="/admin/orders">Orders</Link>
+          </Button>
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground w-auto md:w-full whitespace-nowrap" asChild>
             <Link href="/admin/settings">Settings</Link>
           </Button>
           <Button variant="ghost" className="justify-start w-auto md:w-full whitespace-nowrap" asChild>
