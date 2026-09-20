@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function createOrder(total: number, items: any[]) {
+export async function createOrder(total: number, items: any[], shippingInfo: any) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     throw new Error("You must be logged in to checkout.");
@@ -15,8 +15,13 @@ export async function createOrder(total: number, items: any[]) {
       userId: session.user.id,
       total,
       status: "PENDING",
+      shippingName: shippingInfo.name,
+      shippingPhone: shippingInfo.phone,
+      shippingAddress: shippingInfo.address,
+      shippingCity: shippingInfo.city,
+      shippingState: shippingInfo.state,
       items: {
-        create: items.map(item => ({
+        create: items.map((item: any) => ({
           productId: item.id,
           size: item.size,
           quantity: item.quantity,

@@ -23,6 +23,9 @@ export default function CheckoutForm() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [mounted, setMounted] = useState(false);
   
   const { items, cartTotal, removeItem } = useCart();
@@ -56,13 +59,6 @@ export default function CheckoutForm() {
   const onSuccess = async (reference: any) => {
     try {
       // 1. Create order in DB with items
-      const orderItems = items.map(i => ({
-        id: i.productId, // Actually the store saves `id` as the cart item id, which is `${productId}-${size}`
-        size: i.selectedSize || "N/A",
-        quantity: i.quantity,
-        price: i.price
-      }));
-      
       const realProductItems = items.map(i => ({
         id: i.id.split('-')[0], // Extract real productId if id is composite
         size: i.selectedSize || "N/A",
@@ -70,7 +66,15 @@ export default function CheckoutForm() {
         price: i.price
       }));
 
-      const orderId = await createOrder(totalAmount, realProductItems);
+      const shippingInfo = {
+        name,
+        phone,
+        address,
+        city,
+        state,
+      };
+
+      const orderId = await createOrder(totalAmount, realProductItems, shippingInfo);
       
       // 2. Verify and Mark Paid
       await verifyOrderPayment(orderId, reference.reference);
@@ -146,10 +150,10 @@ export default function CheckoutForm() {
 
       {/* Right Col: Payment Details */}
       <div className="bg-card p-6 rounded-2xl border border-border shadow-sm h-fit">
-        <h2 className="text-xl font-semibold mb-6">Payment Details</h2>
+        <h2 className="text-xl font-semibold mb-6">Shipping &amp; Payment Details</h2>
         <form className="space-y-6" onSubmit={(e) => {
           e.preventDefault();
-          if(!email || !name) {
+          if(!email || !name || !address || !city || !state || !phone) {
             toast.error("Please fill all required fields");
             return;
           }
@@ -182,15 +186,53 @@ export default function CheckoutForm() {
           </div>
 
           <div>
-            <Label htmlFor="phone">Phone Number (Optional)</Label>
+            <Label htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
               type="tel"
+              required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="mt-1"
               placeholder="+234 800 000 0000"
             />
+          </div>
+
+          <div>
+            <Label htmlFor="address">Delivery Address</Label>
+            <Input
+              id="address"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="mt-1"
+              placeholder="123 Example Street, Area 1"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="city">City</Label>
+              <Input
+                id="city"
+                required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="mt-1"
+                placeholder="Abuja"
+              />
+            </div>
+            <div>
+              <Label htmlFor="state">State</Label>
+              <Input
+                id="state"
+                required
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="mt-1"
+                placeholder="FCT"
+              />
+            </div>
           </div>
 
           <Button type="submit" className="w-full h-14 text-lg mt-6 shadow-lg">
