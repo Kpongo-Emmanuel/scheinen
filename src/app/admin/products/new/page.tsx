@@ -38,10 +38,15 @@ export default function NewProductPage() {
     formData.append("sizes", JSON.stringify(sizes));
 
     try {
-      await createProduct(formData);
-      // The action redirects on success
-    } catch (error) {
-      toast.error("Failed to create product");
+      const res = await createProduct(formData);
+      if (res?.error) {
+        toast.error(res.error);
+      } else if (res?.success) {
+        toast.success("Product created!");
+        window.location.href = "/admin/products"; // manual redirect
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred");
     }
   };
 

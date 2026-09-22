@@ -12,9 +12,8 @@ import crypto from "crypto";
 export async function createProduct(formData: FormData) {
   const session = await getServerSession(authOptions);
   
-  // Guard
   if (!session || session.user.role !== "ADMIN") {
-    throw new Error("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
   const name = formData.get("name") as string;
@@ -46,7 +45,7 @@ export async function createProduct(formData: FormData) {
       
     if (error) {
       console.error("Supabase upload error:", error);
-      throw new Error(`Failed to upload image. Make sure the 'scheinen-images' bucket is created and public in Supabase. Error: ${error.message}`);
+      return { error: `Image upload failed. Is the 'scheinen-images' bucket created? Details: ${error.message}` };
     }
     
     const { data: publicUrlData } = supabaseAdmin.storage
@@ -67,26 +66,31 @@ export async function createProduct(formData: FormData) {
     console.error("Failed to parse sizes", e);
   }
 
-  await prisma.product.create({
-    data: {
-      name,
-      description,
-      price,
-      stock,
-      collectionId,
-      imageUrl: imageUrl || null,
-      sizes: {
-        create: sizesData.map(s => ({
-          size: s.size,
-          stock: s.stock
-        }))
-      }
-    },
-  });
+  try {
+    await prisma.product.create({
+      data: {
+        name,
+        description,
+        price,
+        stock,
+        collectionId,
+        imageUrl: imageUrl || null,
+        sizes: {
+          create: sizesData.map(s => ({
+            size: s.size,
+            stock: s.stock
+          }))
+        }
+      },
+    });
+  } catch (dbError: any) {
+    console.error("Database error:", dbError);
+    return { error: `Failed to save product to database: ${dbError.message || 'Unknown error'}` };
+  }
 
   revalidatePath("/admin/products");
   revalidatePath(`/shop/${collectionId}`);
-  redirect("/admin/products");
+  return { success: true };
 }
 
 export async function deleteProduct(productId: string) {
