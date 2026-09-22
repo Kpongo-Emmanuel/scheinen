@@ -46,6 +46,7 @@ model User {
   sessions      Session[]
   reviews       Review[]
   orders        Order[]
+  cart          Cart?
 }
 
 model VerificationToken {
@@ -88,6 +89,7 @@ model Product {
   sizes        ProductSize[]
   reviews      Review[]
   orderItems   OrderItem[]
+  cartItems    CartItem[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
@@ -143,4 +145,28 @@ model OrderItem {
   
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  size      String
+  quantity  Int
+  price     Float    // Current price at time of adding (or can re-calc on checkout)
+  
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId, size])
 }

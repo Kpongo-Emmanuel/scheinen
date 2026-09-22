@@ -46,7 +46,7 @@ export async function createProduct(formData: FormData) {
       
     if (error) {
       console.error("Supabase upload error:", error);
-      throw new Error("Failed to upload image");
+      throw new Error(`Failed to upload image. Make sure the 'scheinen-images' bucket is created and public in Supabase. Error: ${error.message}`);
     }
     
     const { data: publicUrlData } = supabaseAdmin.storage

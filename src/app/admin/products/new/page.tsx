@@ -34,11 +34,7 @@ export default function NewProductPage() {
     setSizes(newSizes);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    // Pass sizes as a JSON string to the server action
+  const submitAction = async (formData: FormData) => {
     formData.append("sizes", JSON.stringify(sizes));
 
     try {
@@ -53,7 +49,7 @@ export default function NewProductPage() {
     <div className="max-w-2xl pb-20">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Add New Product</h1>
       
-      <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 rounded-xl border border-border">
+      <form action={submitAction} className="space-y-6 bg-card p-6 rounded-xl border border-border">
         
         <div>
           <Label htmlFor="name">Product Name</Label>
