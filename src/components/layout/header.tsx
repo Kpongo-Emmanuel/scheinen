@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/useCart";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigation = [
   { name: "Shop All", href: "/shop" },
@@ -83,7 +84,7 @@ export function Header() {
 
           <div className="flex-1 flex justify-center absolute left-1/2 -translate-x-1/2">
             <Link href="/" className="flex flex-col items-center gap-1 sm:gap-2">
-              <img src="/logo.png" alt="SCHEINEN" className="h-10 sm:h-14 md:h-16 object-contain" />
+              <img src="/logo.png" alt="SCHEINEN" className="h-10 sm:h-14 md:h-16 object-contain dark:invert" />
               <span className="font-semibold text-sm sm:text-lg md:text-xl tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
             </Link>
           </div>
@@ -99,6 +100,8 @@ export function Header() {
                 className="h-8 pl-6 pr-0 bg-transparent border-b border-transparent hover:border-border focus:border-foreground text-xs uppercase tracking-widest focus:outline-none transition-all w-[100px] xl:w-[150px]"
               />
             </form>
+
+            <ThemeToggle />
 
             <Button variant="ghost" size="icon" asChild className="relative hover:bg-transparent hover:text-muted-foreground transition-colors">
               <Link href="/cart">
@@ -161,7 +164,7 @@ export function Header() {
         {/* Logo */}
         <div className="p-6 border-b border-border/50 text-center">
           <Link href="/" onClick={closeMenu} className="inline-flex flex-col items-center gap-2 mx-auto">
-            <img src="/logo.png" alt="SCHEINEN" className="h-10 object-contain" />
+            <img src="/logo.png" alt="SCHEINEN" className="h-10 object-contain dark:invert" />
             <span className="font-semibold text-lg tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
           </Link>
         </div>
