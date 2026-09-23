@@ -81,10 +81,9 @@ export function Header() {
             </button>
           </div>
 
-          {/* Center Logo */}
           <div className="flex-1 flex justify-center absolute left-1/2 -translate-x-1/2">
             <Link href="/" className="flex flex-col items-center gap-1 sm:gap-2">
-              <img src="/ss_logo.png" alt="SS" className="h-10 sm:h-14 md:h-16 object-contain mix-blend-multiply dark:mix-blend-normal" />
+              <img src="/logo.png" alt="SCHEINEN" className="h-10 sm:h-14 md:h-16 object-contain" />
               <span className="font-semibold text-sm sm:text-lg md:text-xl tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
             </Link>
           </div>
@@ -162,7 +161,7 @@ export function Header() {
         {/* Logo */}
         <div className="p-6 border-b border-border/50 text-center">
           <Link href="/" onClick={closeMenu} className="inline-flex flex-col items-center gap-2 mx-auto">
-            <img src="/ss_logo.png" alt="SS" className="h-10 object-contain mix-blend-multiply dark:mix-blend-normal" />
+            <img src="/logo.png" alt="SCHEINEN" className="h-10 object-contain" />
             <span className="font-semibold text-lg tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
           </Link>
         </div>
