@@ -2,13 +2,14 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export interface CartItem {
-  id: string; // The cart item ID should probably be a combo of productId and size so they stack
+  id: string; 
   productId: string;
   name: string;
   price: number;
   imageUrl: string | null;
   quantity: number;
   selectedSize?: string;
+  maxStock: number;
 }
 
 interface CartStore {
@@ -31,7 +32,9 @@ export const useCart = create<CartStore>()(
         if (existingItem) {
           set({
             items: currentItems.map((i) => 
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+              i.id === item.id 
+                ? { ...i, quantity: Math.min(i.quantity + 1, i.maxStock) } 
+                : i
             )
           });
         } else {
@@ -44,7 +47,7 @@ export const useCart = create<CartStore>()(
       updateQuantity: (id, quantity) => {
         set({
           items: get().items.map((i) => 
-            i.id === id ? { ...i, quantity: Math.max(1, quantity) } : i
+            i.id === id ? { ...i, quantity: Math.min(i.maxStock, Math.max(1, quantity)) } : i
           )
         });
       },
@@ -54,7 +57,7 @@ export const useCart = create<CartStore>()(
       }
     }),
     {
-      name: 'scheinen-cart', // name of the item in local storage
+      name: 'scheinen-cart', 
     }
   )
 )

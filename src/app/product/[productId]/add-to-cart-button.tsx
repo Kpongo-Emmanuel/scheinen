@@ -34,6 +34,12 @@ export function AddToCartButton({ product }: AddToCartProps) {
     ? (selectedSize ? product.sizes.find(s => s.size === selectedSize)?.stock || 0 : 0)
     : product.baseStock;
 
+  const cartId = hasSizes ? `${product.id}-${selectedSize}` : product.id;
+  const cartItems = useCart((state) => state.items);
+  const currentCartItem = cartItems.find(i => i.id === cartId);
+  const qtyInCart = currentCartItem?.quantity || 0;
+
+  const isFullyStocked = qtyInCart >= currentStock;
   const isOutOfStock = hasSizes ? (selectedSize && currentStock === 0) : (currentStock === 0);
 
   const handleAdd = () => {
@@ -52,8 +58,11 @@ export function AddToCartButton({ product }: AddToCartProps) {
       toast.error("This item is out of stock.");
       return;
     }
-
-    const cartId = hasSizes ? `${product.id}-${selectedSize}` : product.id;
+    
+    if (isFullyStocked) {
+      toast.error(`You already have all available stock (${currentStock}) in your cart!`);
+      return;
+    }
 
     addItem({
       id: cartId,
@@ -62,6 +71,7 @@ export function AddToCartButton({ product }: AddToCartProps) {
       price: product.price,
       imageUrl: product.imageUrl,
       selectedSize: selectedSize || undefined,
+      maxStock: currentStock,
     });
     
     setIsAdded(true);
@@ -117,12 +127,12 @@ export function AddToCartButton({ product }: AddToCartProps) {
 
       <Button 
         onClick={handleAdd}
-        disabled={isOutOfStock || (hasSizes && !selectedSize)}
+        disabled={isOutOfStock || isFullyStocked || (hasSizes && !selectedSize)}
         size="lg"
         className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
       >
         <ShoppingBasket className="mr-2 h-5 w-5" />
-        {isAdded ? "Added to Cart!" : (isOutOfStock ? "Out of Stock" : "Add to Cart")}
+        {isAdded ? "Added to Cart!" : (isOutOfStock ? "Out of Stock" : (isFullyStocked ? "Max Stock Reached" : "Add to Cart"))}
       </Button>
     </div>
   );

@@ -12,7 +12,8 @@ import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { createOrder, verifyOrderPayment } from "@/app/actions/order";
+import { createOrder, verifyOrderPayment, verifyStockBeforePayment } from "@/app/actions/order";
+
 
 const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
@@ -151,12 +152,31 @@ export default function CheckoutForm() {
       {/* Right Col: Payment Details */}
       <div className="bg-card p-6 rounded-2xl border border-border shadow-sm h-fit">
         <h2 className="text-xl font-semibold mb-6">Shipping &amp; Payment Details</h2>
-        <form className="space-y-6" onSubmit={(e) => {
+        <form className="space-y-6" onSubmit={async (e) => {
           e.preventDefault();
           if(!email || !name || !address || !city || !state || !phone) {
             toast.error("Please fill all required fields");
             return;
           }
+          
+          // Verify stock before launching Paystack
+          const realProductItems = items.map(i => ({
+            id: i.id.split('-')[0], 
+            size: i.selectedSize || "N/A",
+            quantity: i.quantity,
+          }));
+          
+          toast.loading("Verifying stock...", { id: "stock-check" });
+          const stockCheck = await verifyStockBeforePayment(realProductItems);
+          
+          if (!stockCheck.success) {
+            toast.dismiss("stock-check");
+            toast.error(stockCheck.message || "An item is out of stock.");
+            return;
+          }
+          
+          toast.dismiss("stock-check");
+          
           // @ts-ignore
           initializePayment(onSuccess, onClose);
         }}>
