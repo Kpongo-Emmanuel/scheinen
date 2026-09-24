@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "Scheinen | Fine Jewelry",
   description: "Curated collection of mossanite, emeralds, lab diamonds, and precious stones.",
   icons: {
-    icon: "/icon-light.png",
+    icon: "/icon-light.png?v=3",
   },
 };
 
