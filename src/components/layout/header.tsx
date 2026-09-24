@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/useCart";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/theme-toggle";
+
 
 const navigation = [
   { name: "Shop All", href: "/shop" },
@@ -101,7 +101,7 @@ export function Header() {
               />
             </form>
 
-            <ThemeToggle />
+
 
             <Button variant="ghost" size="icon" asChild className="relative hover:bg-transparent hover:text-muted-foreground transition-colors">
               <Link href="/cart">
