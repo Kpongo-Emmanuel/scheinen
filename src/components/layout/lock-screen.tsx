@@ -2,11 +2,24 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Lock } from "lucide-react";
 
-export function LockScreen({ message }: { message?: string }) {
+export function LockScreen({ message, showBackButton = true }: { message?: string; showBackButton?: boolean }) {
+  const router = useRouter();
+
   return (
     <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-4">
+      {showBackButton && (
+        <button 
+          onClick={() => router.back()}
+          className="absolute top-8 left-8 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Go Back
+        </button>
+      )}
+      
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -15,9 +28,9 @@ export function LockScreen({ message }: { message?: string }) {
       >
         <div className="flex flex-col items-center gap-2">
           <img 
-            src="/ss_logo.png" 
+            src="/logo.png" 
             alt="SCHEINEN" 
-            className="h-20 md:h-24 object-contain mix-blend-multiply dark:mix-blend-normal opacity-90"
+            className="h-20 md:h-24 object-contain dark:invert opacity-90"
           />
           <h1 className="font-bold tracking-[0.4em] uppercase text-xl md:text-2xl mt-4">
             SCHEINEN
