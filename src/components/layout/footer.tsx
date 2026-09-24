@@ -10,7 +10,7 @@ export async function Footer() {
         <div className="col-span-1 md:col-span-2">
           <Link href="/" className="mb-6 inline-flex flex-col items-center sm:items-start gap-2">
             <div className="flex flex-col items-center gap-2">
-              <img src="/ss_logo.png" alt="SS" className="h-20 md:h-28 object-contain mix-blend-multiply dark:mix-blend-normal" />
+              <img src="/logo.png" alt="SCHEINEN" className="h-20 md:h-28 object-contain dark:invert" />
               <span className="font-semibold text-2xl tracking-[0.3em] uppercase text-foreground ml-[0.3em]">SCHEINEN</span>
             </div>
           </Link>
