@@ -56,33 +56,45 @@ export default async function CollectionPage({ params }: { params: Promise<{ col
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {collection.products.map(product => (
-              <Link href={`/product/${product.id}`} key={product.id} className="group cursor-pointer block">
-                <div className="flex flex-col gap-3">
-                  <div className="aspect-[4/5] relative bg-muted overflow-hidden">
-                    {product.imageUrl ? (
-                      <img 
-                        src={product.imageUrl} 
-                        alt={product.name}
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs uppercase tracking-widest">
-                        No Image
-                      </div>
-                    )}
+            {collection.products.map(product => {
+              const totalStock = product.sizes.length > 0 
+                ? product.sizes.reduce((sum, s) => sum + s.stock, 0)
+                : product.stock;
+              const isSoldOut = totalStock === 0;
+
+              return (
+                <Link href={`/product/${product.id}`} key={product.id} className="group cursor-pointer block">
+                  <div className="flex flex-col gap-3">
+                    <div className="aspect-[4/5] relative bg-muted overflow-hidden">
+                      {product.imageUrl ? (
+                        <img 
+                          src={product.imageUrl} 
+                          alt={product.name}
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs uppercase tracking-widest">
+                          No Image
+                        </div>
+                      )}
+                      {isSoldOut && (
+                        <div className="absolute top-4 right-4 bg-background/90 text-destructive text-[10px] uppercase tracking-wider px-2 py-1 font-medium">
+                          Sold Out
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium uppercase tracking-wide group-hover:text-muted-foreground transition-colors line-clamp-1">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        ₦{product.price.toLocaleString()}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-sm font-medium uppercase tracking-wide group-hover:text-muted-foreground transition-colors line-clamp-1">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      ₦{product.price.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

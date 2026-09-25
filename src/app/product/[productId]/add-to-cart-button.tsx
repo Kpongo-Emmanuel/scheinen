@@ -42,6 +42,8 @@ export function AddToCartButton({ product }: AddToCartProps) {
   const isFullyStocked = qtyInCart >= currentStock;
   const isOutOfStock = hasSizes ? (selectedSize && currentStock === 0) : (currentStock === 0);
 
+  const isAdmin = session?.user?.role === "ADMIN";
+
   const handleAdd = () => {
     if (!session) {
       toast.error("Please log in to add items to your cart.");
@@ -55,12 +57,12 @@ export function AddToCartButton({ product }: AddToCartProps) {
     }
 
     if (currentStock === 0) {
-      toast.error("This item is out of stock.");
+      toast.error("This item is sold out.");
       return;
     }
     
     if (isFullyStocked) {
-      toast.error(`You already have all available stock (${currentStock}) in your cart!`);
+      toast.error(isAdmin ? `You already have all available stock (${currentStock}) in your cart!` : "You have reached the maximum available limit for this item.");
       return;
     }
 
@@ -87,7 +89,7 @@ export function AddToCartButton({ product }: AddToCartProps) {
             <span className="text-sm font-medium">Select Size</span>
             {selectedSize && (
               <span className={cn("text-xs font-medium", currentStock > 0 ? "text-green-600" : "text-destructive")}>
-                {currentStock > 0 ? `${currentStock} in stock` : "Out of stock"}
+                {currentStock > 0 ? (isAdmin ? `${currentStock} in stock` : "In stock") : "Sold out"}
               </span>
             )}
           </div>
@@ -118,9 +120,11 @@ export function AddToCartButton({ product }: AddToCartProps) {
       {!hasSizes && (
         <div>
           {currentStock > 0 ? (
-            <p className="text-sm text-green-600 font-medium">{currentStock} in stock and ready to ship</p>
+            isAdmin ? (
+              <p className="text-sm text-green-600 font-medium">{currentStock} in stock and ready to ship</p>
+            ) : null
           ) : (
-            <p className="text-sm text-destructive font-medium">Out of Stock</p>
+            <p className="text-sm text-destructive font-medium uppercase tracking-widest">Sold Out</p>
           )}
         </div>
       )}
@@ -132,7 +136,7 @@ export function AddToCartButton({ product }: AddToCartProps) {
         className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
       >
         <ShoppingBasket className="mr-2 h-5 w-5" />
-        {isAdded ? "Added to Cart!" : (isOutOfStock ? "Out of Stock" : (isFullyStocked ? "Max Stock Reached" : "Add to Cart"))}
+        {isAdded ? "Added to Cart!" : (isOutOfStock ? "Sold Out" : (isFullyStocked ? "Limit Reached" : "Add to Cart"))}
       </Button>
     </div>
   );
